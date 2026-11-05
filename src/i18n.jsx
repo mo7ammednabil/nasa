@@ -43,7 +43,7 @@ const strings = {
   },
   en: {
     siteTitle: 'Abandoned but not Forgotten',
-    siteTitleEn: 'أشياء تُركت، لكنها لم تُنسَ',
+    siteTitleEn: 'Abandoned but not Forgotten',
     kicker: 'Educational project',
     heroLine: 'Machines left behind by space missions still have stories to tell.',
     heroBody:
