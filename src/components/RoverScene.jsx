@@ -100,14 +100,19 @@ export default function RoverScene({ craft, onSelect, compact }) {
       <CameraZoom compact={compact} />
       <ContactShadows position={[0, 0.01, 0]} opacity={0.55} scale={14} blur={2.6} far={4} color="#1a0a05" />
       <OrbitControls
-        target={[0, 1.4, 0]}
-        enablePan={false}
-        enableDamping
-        minDistance={5}
-        maxDistance={13}
-        minPolarAngle={Math.PI * 0.25}
-        maxPolarAngle={Math.PI * 0.49}
-      />
+  makeDefault
+  target={[0, 1.4, 0]}
+  enableRotate={true}
+  enablePan={true}
+  enableZoom={true}
+  enableDamping={true}
+  dampingFactor={0.05}
+  minDistance={3}
+  maxDistance={20}
+  minPolarAngle={0}
+  maxPolarAngle={Math.PI}
+  screenSpacePanning={true}
+/>
     </Canvas>
   )
 }
