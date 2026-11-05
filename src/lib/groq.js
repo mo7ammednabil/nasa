@@ -2,17 +2,12 @@ import { statuses } from '../data/worlds.js'
 import { buildKnowledge, pick } from './content.js'
 
 // ============================================================================
-// ⚠️ مؤقت: الـ key في الفرونت (متغير بيئة VITE_GROQ_API_KEY من ملف .env).
-// أي حد يفتح أدوات المتصفح يقدر يشوفه. قبل النشر:
-//   1) اعمل سيرفر صغير (الباك) بيحط الـ key عنده ويكلم Groq.
-//   2) غيّر ENDPOINT تحت لرابط السيرفر ده، وشيل الـ Authorization header.
-//   3) امسح VITE_GROQ_API_KEY من .env.
+// Chat requests go through /api/chat (Vercel Serverless Function).
+// The Groq API key lives in GROQ_API_KEY on the server — never in the browser.
 // ============================================================================
-const KEY = import.meta.env.VITE_GROQ_API_KEY
-const MODEL = import.meta.env.VITE_GROQ_MODEL || 'llama-3.1-8b-instant'
-const ENDPOINT = 'https://api.groq.com/openai/v1/chat/completions'
 
-export const chatEnabled = Boolean(KEY)
+// Chat is always enabled: the backend decides whether the key is present.
+export const chatEnabled = true
 export const MAX_QUESTION_LENGTH = 200
 
 // كلمات بتدل على ضيق أو خطر: مش بنبعتها للـ AI، وبنوجّه الطفل لشخص كبير
@@ -49,15 +44,11 @@ export async function askRover({ craft, history, question, lang, signal }) {
     { role: 'user', content: question.slice(0, MAX_QUESTION_LENGTH) },
   ]
 
-  const res = await fetch(ENDPOINT, {
+  const res = await fetch('/api/chat', {
     method: 'POST',
     signal,
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${KEY}`,
-    },
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      model: MODEL,
       messages,
       temperature: 0.2,
       max_tokens: 220,
@@ -65,8 +56,8 @@ export async function askRover({ craft, history, question, lang, signal }) {
   })
 
   if (!res.ok) {
-    throw new Error(`Groq ${res.status}`)
+    throw new Error(`Chat API ${res.status}`)
   }
   const data = await res.json()
-  return data.choices?.[0]?.message?.content?.trim() || ''
+  return data.reply || ''
 }
