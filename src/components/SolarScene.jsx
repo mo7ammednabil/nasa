@@ -16,18 +16,42 @@ function WorldPin({ world, onExplore }) {
   const { lang } = useLang()
   const name = pick(world.name, lang)
   return (
-    <Html center zIndexRange={[20, 0]} style={{ pointerEvents: 'auto', direction: 'ltr' }}>
+    <Html
+      center
+      zIndexRange={[20, 0]}
+      style={{
+        top: 0,
+        left: 0,
+        pointerEvents: 'auto',
+        direction: 'ltr',
+      }}
+    >
       <button
         onClick={() => onExplore(world.id)}
         aria-label={name}
         className="relative grid place-items-center"
         style={{ width: 56, height: 56, background: 'none', border: 0, cursor: 'pointer' }}
       >
-        <span className="ping absolute rounded-full" style={{ width: 30, height: 30, border: '2px solid #ffb27a' }} />
-        <span className="absolute rounded-full" style={{ width: 11, height: 11, background: '#ffb27a', boxShadow: '0 0 12px #ff7a45' }} />
+        <span
+          className="ping absolute rounded-full"
+          style={{ inset: 0, margin: 'auto', width: 30, height: 30, border: '2px solid #ffb27a' }}
+        />
+        <span
+          className="absolute rounded-full"
+          style={{ inset: 0, margin: 'auto', width: 11, height: 11, background: '#ffb27a', boxShadow: '0 0 12px #ff7a45' }}
+        />
         <span
           className="glass absolute rounded-full text-fg"
-          style={{ top: 50, padding: '2px 12px', whiteSpace: 'nowrap', fontSize: 13, fontWeight: 600 }}
+          style={{
+            top: 50,
+            left: '50%',
+            transform: 'translateX(-50%)',
+            padding: '2px 12px',
+            whiteSpace: 'nowrap',
+            fontSize: 13,
+            fontWeight: 600,
+            direction: lang === 'ar' ? 'rtl' : 'ltr',
+          }}
         >
           {name}
         </span>
@@ -156,6 +180,8 @@ export default function SolarScene({ onExplore }) {
       dpr={[1, 1.5]}
       camera={{ position: [0, 9, 22], fov: 38 }}
       gl={{ antialias: true, powerPreference: 'high-performance' }}
+      style={{ direction: 'ltr' }}
+      dir="ltr"
       aria-label="Solar system"
     >
       <ViewShift />

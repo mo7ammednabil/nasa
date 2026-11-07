@@ -115,6 +115,27 @@ const mars = {
   subtitle: { ar: 'الكوكب الأحمر', en: 'The red planet' },
   crafts: [opportunity],
 }
+const moon = {
+  id: 'moon',
+  enabled: true,
+  solarNode: 'moon',
+  backdrop: 'moon',
+  name: {
+    ar: 'القمر',
+    en: 'Moon',
+  },
+}
+const space = {
+  id: 'space',
+  enabled: true,
+  solarNode: null,
+  backdrop: 'space',
+  name: {
+    ar: 'الفضاء',
+    en: 'Space',
+  },
+}
+
 
 /* القمر: فعّله لما تجهّز الخلفية والمركبات
 const moon = {
@@ -128,4 +149,4 @@ const moon = {
 }
 */
 
-export const worlds = [mars /*, moon */]
+export const worlds = [mars , moon ,space]

@@ -39,7 +39,7 @@ export default function WelcomeScreen({ onExplore }) {
       </div>
 
       {/* المشهد ثلاثي الأبعاد */}
-      <div className="absolute inset-x-0 top-14 h-[48%] md:inset-0 md:h-auto">
+      <div className="absolute inset-x-0 -top-4 h-[48%] md:inset-0 md:h-auto" dir="ltr">
         {webgl ? (
           <Suspense fallback={<Center text={t.loading3d} />}>
             <SolarScene onExplore={onExplore} />
