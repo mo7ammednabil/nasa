@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from 'react'
 import { useLang } from '../i18n.jsx'
-import { pick } from '../lib/content.js'
+import { useAgeGroup } from '../lib/ageGroup.jsx'
+import { getCraftChatIntro, getCraftSuggestions } from '../lib/content.js'
 import { askRover, chatEnabled, looksLikeDistress, MAX_QUESTION_LENGTH } from '../lib/groq.js'
 
 export default function ChatTab({ craft }) {
   const { t, lang } = useLang()
+  const { ageGroupId } = useAgeGroup()
   const [messages, setMessages] = useState([])
   const [input, setInput] = useState('')
   const [busy, setBusy] = useState(false)
@@ -43,7 +45,14 @@ export default function ChatTab({ craft }) {
     setBusy(true)
     abortRef.current = new AbortController()
     try {
-      const answer = await askRover({ craft, history, question: q, lang, signal: abortRef.current.signal })
+      const answer = await askRover({
+        craft,
+        history,
+        question: q,
+        lang,
+        ageGroupId,
+        signal: abortRef.current.signal,
+      })
       push('assistant', answer || t.chatError, { system: !answer })
     } catch (e) {
       if (e.name !== 'AbortError') push('assistant', t.chatError, { system: true })
@@ -52,12 +61,12 @@ export default function ChatTab({ craft }) {
     }
   }
 
-  const suggestions = craft.suggestions?.[lang] || []
+  const suggestions = getCraftSuggestions(craft, ageGroupId, lang)
 
   return (
     <div className="flex h-full min-h-0 flex-col">
       <div className="scroll-y min-h-0 flex-1 space-y-3 px-5 pb-3" aria-live="polite">
-        <Bubble role="assistant">{pick(craft.chatIntro, lang)}</Bubble>
+        <Bubble role="assistant">{getCraftChatIntro(craft, ageGroupId, lang)}</Bubble>
         {messages.length === 0 && suggestions.length > 0 && (
           <div className="flex flex-wrap gap-2 pt-1">
             {suggestions.map((s) => (

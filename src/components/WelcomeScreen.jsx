@@ -1,8 +1,10 @@
 import { lazy, Suspense, useState } from 'react'
 import { useLang } from '../i18n.jsx'
+import { useAgeGroup } from '../lib/ageGroup.jsx'
 import { hasWebGL } from '../lib/webgl.js'
 import { enabledWorlds, pick } from '../lib/content.js'
 import LangToggle from './LangToggle.jsx'
+import AgeToggle from './AgeToggle.jsx'
 
 const SolarScene = lazy(() => import('./SolarScene.jsx'))
 
@@ -13,8 +15,9 @@ const STARS = Array.from({ length: 60 }, (_, i) => ({
   o: 0.25 + ((i * 7) % 6) / 12,
 }))
 
-export default function WelcomeScreen({ onExplore }) {
+export default function WelcomeScreen({ onExplore, onChangeAge }) {
   const { t, lang } = useLang()
+  const { ageGroup } = useAgeGroup()
   const [webgl] = useState(hasWebGL)
   const worlds = enabledWorlds()
 
@@ -40,9 +43,21 @@ export default function WelcomeScreen({ onExplore }) {
 
       <header className="pointer-events-none absolute inset-x-0 top-0 z-20 flex items-center justify-between p-4 md:p-6">
         <span className="glass rounded-full px-3 py-1 text-xs font-medium text-muted">{t.kicker}</span>
-        <span className="pointer-events-auto">
+        <div className="pointer-events-auto flex items-center gap-2">
+          {ageGroup ? (
+            <AgeToggle onClick={onChangeAge} />
+          ) : (
+            <button
+              onClick={onChangeAge}
+              className="icon-btn !gap-1.5 !px-3 text-xs font-medium"
+              style={{ borderColor: 'rgba(255, 122, 69, 0.4)', background: 'rgba(255, 122, 69, 0.12)' }}
+            >
+              <span>🚀</span>
+              <span>{t.ageLevelLabel}</span>
+            </button>
+          )}
           <LangToggle />
-        </span>
+        </div>
       </header>
 
       {/* المشهد ثلاثي الأبعاد */}

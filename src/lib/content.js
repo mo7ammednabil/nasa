@@ -6,20 +6,63 @@ export const pick = (obj, lang) => (obj && (obj[lang] ?? obj.en)) || ''
 export const enabledWorlds = () => worlds.filter((w) => w.enabled)
 export const getWorld = (id) => worlds.find((w) => w.id === id)
 
+// جلب المحتوى المناسب للفئة العمرية مع دعم fallback آمن
+export function getCraftAgeContent(craft, ageGroupId) {
+  if (!craft) return null
+  return craft.ageContent?.[ageGroupId] || null
+}
+
+export function getCraftTagline(craft, ageGroupId, lang) {
+  if (!craft) return ''
+  const age = getCraftAgeContent(craft, ageGroupId)
+  if (age?.tagline) return pick(age.tagline, lang)
+  return pick(craft.tagline, lang)
+}
+
+export function getCraftStory(craft, ageGroupId) {
+  if (!craft) return []
+  const age = getCraftAgeContent(craft, ageGroupId)
+  if (age?.story && Array.isArray(age.story) && age.story.length > 0) {
+    return age.story
+  }
+  return craft.story || []
+}
+
+export function getCraftSuggestions(craft, ageGroupId, lang) {
+  if (!craft) return []
+  const age = getCraftAgeContent(craft, ageGroupId)
+  const suggestionsObj = age?.suggestions || craft.suggestions
+  if (!suggestionsObj) return []
+  return suggestionsObj[lang] || suggestionsObj.en || []
+}
+
+export function getCraftChatIntro(craft, ageGroupId, lang) {
+  if (!craft) return ''
+  const age = getCraftAgeContent(craft, ageGroupId)
+  const introObj = age?.chatIntro || craft.chatIntro
+  return pick(introObj, lang)
+}
+
 // النص اللي بيتبعت للـ AI: هو المصدر الوحيد لإجابات المركبة
-export function buildKnowledge(craft, statuses, lang) {
+export function buildKnowledge(craft, statuses, lang, ageGroupId = 'teens') {
   const lines = []
   lines.push(`Name: ${pick(craft.name, 'en')} (nickname ${pick(craft.nickname, 'en')})`)
   lines.push(`Status: ${pick(statuses[craft.status], 'en')}`)
+  lines.push(`Target audience: ${ageGroupId}`)
   craft.facts.forEach((f) => lines.push(`${pick(f.label, 'en')}: ${pick(f.value, 'en')}`))
   lines.push(`Main achievement: ${pick(craft.achievement, 'en')}`)
-  lines.push('Story:')
-  craft.story.forEach((s) => lines.push(`- ${pick(s, 'en')}`))
+
+  const story = getCraftStory(craft, ageGroupId)
+  lines.push('Story & context:')
+  story.forEach((s) => lines.push(`- ${pick(s, 'en')}`))
+
   if (lang === 'ar') {
     lines.push('')
     lines.push('Arabic wording reference (use these Arabic phrasings when answering in Arabic):')
     craft.facts.forEach((f) => lines.push(`${pick(f.label, 'ar')}: ${pick(f.value, 'ar')}`))
     lines.push(`الإنجاز: ${pick(craft.achievement, 'ar')}`)
+    lines.push('القصة:')
+    story.forEach((s) => lines.push(`- ${pick(s, 'ar')}`))
   }
   return lines.join('\n')
 }

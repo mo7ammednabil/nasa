@@ -39,6 +39,12 @@ const strings = {
     chatSafety:
       'يبدو أنك تحتاج للتحدث مع أحد. من فضلك أخبر شخصًا بالغًا تثق به الآن، مثل أحد والديك أو معلمك. أنا روبوت ولا أستطيع مساعدتك في هذا.',
     chatFooter: 'الإجابات مبنية على مصادر NASA الموضحة في تبويب المعلومات. المركبة روبوت ولا تتحدث فعلًا.',
+    ageSelectTitle: 'اختر فئتك العمرية',
+    ageSelectSubtitle: 'سنخصص القصص، عمق الشروحات العلمية، وأسلوب المحادثة مع الروبوتات ليناسبك تماماً.',
+    ageSelectHint: 'يمكنك تغيير هذا الاختيار في أي وقت.',
+    continueBtn: 'متابعة الاستكشاف',
+    changeAge: 'تغيير المستوى',
+    ageLevelLabel: 'المستوى',
     lang: 'English',
   },
   en: {
@@ -79,6 +85,12 @@ const strings = {
     chatSafety:
       'It sounds like you may need to talk to someone. Please tell a trusted adult right now, like a parent or a teacher. I’m a robot and can’t help with this.',
     chatFooter: 'Answers come from the NASA sources listed in the Info tab. The rover is a robot and does not really talk.',
+    ageSelectTitle: 'Choose Your Explorer Level',
+    ageSelectSubtitle: 'We will personalize stories, explanation depth, and rover AI chat to fit you best.',
+    ageSelectHint: 'You can change your explorer level at any time.',
+    continueBtn: 'Continue Exploring',
+    changeAge: 'Change Level',
+    ageLevelLabel: 'Level',
     lang: 'العربية',
   },
 }

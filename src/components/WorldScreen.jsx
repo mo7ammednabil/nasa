@@ -3,12 +3,13 @@ import { useLang } from '../i18n.jsx'
 import { hasWebGL } from '../lib/webgl.js'
 import { pick } from '../lib/content.js'
 import LangToggle from './LangToggle.jsx'
+import AgeToggle from './AgeToggle.jsx'
 import InfoPanel from './InfoPanel.jsx'
 import { getBackdrop } from './backdrops.jsx'
 
 const RoverScene = lazy(() => import('./RoverScene.jsx'))
 
-export default function WorldScreen({ world, onBack }) {
+export default function WorldScreen({ world, onBack, onChangeAge }) {
   const { t, lang } = useLang()
   const [craftId, setCraftId] = useState(world.crafts[0]?.id)
   const [open, setOpen] = useState(false)
@@ -52,7 +53,8 @@ export default function WorldScreen({ world, onBack }) {
             {title}
           </h1>
         </div>
-        <div className="pointer-events-auto">
+        <div className="pointer-events-auto flex items-center gap-2">
+          <AgeToggle onClick={onChangeAge} />
           <LangToggle />
         </div>
       </header>

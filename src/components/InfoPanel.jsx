@@ -1,7 +1,8 @@
 import { useEffect, useId, useRef, useState } from 'react'
 import { useLang } from '../i18n.jsx'
+import { useAgeGroup } from '../lib/ageGroup.jsx'
 import { statuses } from '../data/worlds.js'
-import { pick } from '../lib/content.js'
+import { getCraftStory, getCraftTagline, pick } from '../lib/content.js'
 import ChatTab from './ChatTab.jsx'
 import VideoTab from './VideoTab.jsx'
 
@@ -9,6 +10,7 @@ const TABS = ['info', 'story', 'video', 'chat']
 
 export default function InfoPanel({ craft, onClose }) {
   const { t, lang } = useLang()
+  const { ageGroupId, ageGroup } = useAgeGroup()
   const [tab, setTab] = useState('info')
   const id = useId()
   const closeRef = useRef(null)
@@ -30,9 +32,23 @@ export default function InfoPanel({ craft, onClose }) {
     >
       <header className="flex items-start justify-between gap-3 px-5 pb-3 pt-4">
         <div className="min-w-0">
-          <p className="eyebrow">
-            {craft.code} · {pick(craft.nickname, lang)}
-          </p>
+          <div className="flex items-center gap-2">
+            <p className="eyebrow">
+              {craft.code} · {pick(craft.nickname, lang)}
+            </p>
+            {ageGroup && (
+              <span
+                className="rounded-full px-2 py-0.5 text-[0.7rem] font-medium"
+                style={{
+                  background: ageGroup.bgColor,
+                  color: ageGroup.color,
+                  border: `1px solid ${ageGroup.borderColor}`,
+                }}
+              >
+                {ageGroup.icon} {pick(ageGroup.name, lang)}
+              </span>
+            )}
+          </div>
           <h2 className="display mt-1 truncate text-2xl">{pick(craft.name, lang)}</h2>
         </div>
         <button ref={closeRef} className="icon-btn shrink-0" onClick={onClose} aria-label={t.close}>
@@ -57,8 +73,8 @@ export default function InfoPanel({ craft, onClose }) {
       </div>
 
       <div id={`${id}-panel`} role="tabpanel" aria-labelledby={`${id}-${tab}`} className="mt-3 min-h-0 flex-1">
-        {tab === 'info' && <InfoTab craft={craft} />}
-        {tab === 'story' && <StoryTab craft={craft} />}
+        {tab === 'info' && <InfoTab craft={craft} ageGroupId={ageGroupId} />}
+        {tab === 'story' && <StoryTab craft={craft} ageGroupId={ageGroupId} />}
         {tab === 'video' && <VideoTab craft={craft} />}
         {tab === 'chat' && <ChatTab craft={craft} />}
       </div>
@@ -66,11 +82,12 @@ export default function InfoPanel({ craft, onClose }) {
   )
 }
 
-function InfoTab({ craft }) {
+function InfoTab({ craft, ageGroupId }) {
   const { t, lang } = useLang()
+  const tagline = getCraftTagline(craft, ageGroupId, lang)
   return (
     <div className="scroll-y h-full space-y-5 px-5 pb-5">
-      <p className="text-[1.02rem] leading-relaxed text-fg/90">{pick(craft.tagline, lang)}</p>
+      <p className="text-[1.02rem] leading-relaxed text-fg/90">{tagline}</p>
 
       <div className="flex items-center gap-3">
         <span className="text-sm text-muted">{t.statusLabel}</span>
@@ -107,20 +124,26 @@ function InfoTab({ craft }) {
   )
 }
 
-function StoryTab({ craft }) {
+function StoryTab({ craft, ageGroupId }) {
   const { t, lang } = useLang()
   const [i, setI] = useState(0)
-  const last = craft.story.length - 1
+  const story = getCraftStory(craft, ageGroupId)
+  const last = Math.max(0, story.length - 1)
+
+  useEffect(() => {
+    setI(0)
+  }, [ageGroupId])
+
   return (
     <div className="flex h-full flex-col px-5 pb-5">
       <div className="flex gap-1.5" aria-hidden="true">
-        {craft.story.map((_, k) => (
+        {story.map((_, k) => (
           <span key={k} className="h-1 flex-1 rounded-full" style={{ background: k <= i ? '#ff7a45' : 'rgba(255,255,255,0.15)' }} />
         ))}
       </div>
       <div className="scroll-y min-h-0 flex-1 py-5">
         <p key={i} className="rise text-[1.35rem] font-medium leading-snug md:text-[1.5rem]">
-          {pick(craft.story[i], lang)}
+          {pick(story[i], lang)}
         </p>
       </div>
       <div className="flex items-center justify-between gap-3">
@@ -128,7 +151,7 @@ function StoryTab({ craft }) {
           {lang === 'ar' ? '→' : '←'}
         </button>
         <span className="text-xs text-muted">
-          {i + 1} / {craft.story.length}
+          {i + 1} / {story.length}
         </span>
         <button className="icon-btn" onClick={() => setI((v) => Math.min(last, v + 1))} disabled={i === last} style={{ opacity: i === last ? 0.35 : 1 }} aria-label="next">
           {lang === 'ar' ? '←' : '→'}
