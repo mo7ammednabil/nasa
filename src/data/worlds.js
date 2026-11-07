@@ -124,6 +124,8 @@ const moon = {
     ar: 'القمر',
     en: 'Moon',
   },
+  subtitle: { ar: 'جارنا الأقرب', en: 'Our closest neighbor' },
+  crafts: [],
 }
 const space = {
   id: 'space',
@@ -134,19 +136,8 @@ const space = {
     ar: 'الفضاء',
     en: 'Space',
   },
+    subtitle: { ar: 'اكتشف أسرار الكون', en: 'Explore the universe' },
+  crafts: [],
 }
-
-
-/* القمر: فعّله لما تجهّز الخلفية والمركبات
-const moon = {
-  id: 'moon',
-  enabled: true,
-  solarNode: 'moon',
-  backdrop: 'moon',
-  name: { ar: 'القمر', en: 'The Moon' },
-  subtitle: { ar: 'جارنا الأقرب', en: 'Our closest neighbor' },
-  crafts: [ ...مركبات القمر هنا... ],
-}
-*/
 
 export const worlds = [mars , moon ,space]
