@@ -22,13 +22,13 @@ export default function WelcomeScreen({ onExplore }) {
   const titleSub = lang === 'ar' ? t.siteTitleEn : t.siteTitle
 
   return (
-    <div className="relative h-full overflow-hidden bg-base">
+    <div className="relative h-full overflow-y-auto overflow-x-hidden bg-base md:overflow-hidden">
       <div
-        className="absolute inset-0"
+        className="pointer-events-none fixed inset-0 md:absolute"
         aria-hidden="true"
         style={{ background: 'radial-gradient(ellipse at 30% 50%, rgba(255,122,69,0.10), transparent 55%), radial-gradient(ellipse at 80% 10%, rgba(80,110,255,0.08), transparent 50%)' }}
       />
-      <div className="absolute inset-0" aria-hidden="true">
+      <div className="pointer-events-none fixed inset-0 md:absolute" aria-hidden="true">
         {STARS.map((s, i) => (
           <span
             key={i}
@@ -38,8 +38,15 @@ export default function WelcomeScreen({ onExplore }) {
         ))}
       </div>
 
+      <header className="pointer-events-none absolute inset-x-0 top-0 z-20 flex items-center justify-between p-4 md:p-6">
+        <span className="glass rounded-full px-3 py-1 text-xs font-medium text-muted">{t.kicker}</span>
+        <span className="pointer-events-auto">
+          <LangToggle />
+        </span>
+      </header>
+
       {/* المشهد ثلاثي الأبعاد */}
-      <div className="absolute inset-x-0 top-14 h-[48%] md:inset-0 md:h-auto" dir="ltr">
+      <div className="relative z-10 mt-14 h-[45vh] min-h-[300px] w-full shrink-0 md:absolute md:inset-0 md:mt-0 md:h-auto md:min-h-0" dir="ltr">
         {webgl ? (
           <Suspense fallback={<Center text={t.loading3d} />}>
             <SolarScene onExplore={onExplore} />
@@ -49,18 +56,11 @@ export default function WelcomeScreen({ onExplore }) {
         )}
       </div>
 
-      <header className="pointer-events-none absolute inset-x-0 top-0 z-20 flex items-center justify-between p-4 md:p-6">
-        <span className="glass rounded-full px-3 py-1 text-xs font-medium text-muted">{t.kicker}</span>
-        <span className="pointer-events-auto">
-          <LangToggle />
-        </span>
-      </header>
-
       {/* النص والأزرار */}
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 px-5 pb-6 pt-20 md:inset-y-0 md:end-auto md:flex md:w-[44%] md:items-center md:p-14">
+      <div className="relative z-10 px-5 pb-12 pt-4 md:pointer-events-none md:absolute md:inset-y-0 md:bottom-0 md:end-auto md:flex md:w-[44%] md:items-center md:p-14 md:pb-6 md:pt-20">
         <div
           aria-hidden="true"
-          className="absolute inset-0 -z-10 bg-linear-to-t from-base via-base/85 to-transparent md:bg-linear-to-r md:from-base/90 md:via-base/55 md:to-transparent rtl:md:bg-linear-to-l"
+          className="hidden md:absolute md:inset-0 md:-z-10 md:block md:bg-linear-to-r md:from-base/90 md:via-base/55 md:to-transparent rtl:md:bg-linear-to-l"
         />
         <div className="rise max-w-xl">
           <p className="eyebrow mb-3 text-accent2">{titleSub}</p>
