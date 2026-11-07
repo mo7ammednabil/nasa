@@ -32,7 +32,7 @@ export default function App() {
 
   if (isChangingAge) {
     return (
-      <main className="h-full">
+      <main className="h-full overflow-hidden">
         <AgeSelectScreen
           onConfirm={handleAgeConfirmed}
           onBack={worldId || (!pendingWorldId && ageGroupId) ? () => setIsChangingAge(false) : null}
@@ -42,7 +42,7 @@ export default function App() {
   }
 
   return (
-    <main className="h-full">
+    <main className="h-full overflow-hidden">
       {world ? (
         <WorldScreen
           key={world.id}
